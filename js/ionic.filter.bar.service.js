@@ -263,9 +263,16 @@
 
             //animate the filterBar out, hide keyboard and backdrop
             ionic.requestAnimationFrame(function () {
-              filterWrapperEl.removeClass('filter-bar-in');
-              hideKeyboard();
-              scope.hideBackdrop();
+
+              // wait till the transition is over before hiding the keyboard - improves animation performance
+              filterWrapperEl.on('transitionend', function onTransitionEnd () {
+                hideKeyboard();
+                scope.hideBackdrop();
+
+                filterWrapperEl[0].off('transitionend', onTransitionEnd);
+              });
+
+              filterWrapperEl.removeClass('filter-bar-in');     
 
               //Wait before cleaning up so element isn't removed before filter bar animates out
               $timeout(function () {
@@ -310,10 +317,16 @@
               if (scope.removed) return;
 
               $timeout(function () {
-                filterWrapperEl.addClass('filter-bar-in');
-                scope.focusInput();
-                scope.showBackdrop();
-                (done || angular.noop)();
+                filterWrapperEl.addClass('filter-bar-in');                
+                
+                // wait till the transition is over before hiding the keyboard - improves animation performance
+                filterWrapperEl.on('transitionend', function onTransitionEnd() {
+                   filterWrapperEl.off('transitionend', onTransitionEnd);
+                   scope.focusInput();
+                   scope.showBackdrop();
+                   (done || angular.noop)();
+                });
+               
               }, 20, false);
             });
 

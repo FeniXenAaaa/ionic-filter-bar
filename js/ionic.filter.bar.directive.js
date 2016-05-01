@@ -115,7 +115,20 @@
             };
 
             //Event Listeners
-            cancelEl.addEventListener('click', cancelFilterBar);
+
+            // call stopImmediatePropagation on touchstart and mousedown in order to prevent
+            // search input loosing focus and closing the keybaord when canceling the filter bar. We need this since  
+            // the keyboard is going to be closed anyway after animating the filter bar out of view. Premature closing of the keybaord
+            // causes slow animation.
+            cancelEl.addEventListener('mousedown', function (event) {
+              event.stopImmediatePropagation();
+              cancelFilterBar();
+            });
+
+            cancelEl.addEventListener('touchstart', function (event) {            
+              event.stopImmediatePropagation();
+              cancelFilterBar();
+            });
             // Since we are wrapping with label, need to bind touchstart rather than click.
             // Even if we use div instead of label need to bind touchstart.  Click isn't allowing input to regain focus quickly
             clearEl.addEventListener('touchstart', clearClick);
