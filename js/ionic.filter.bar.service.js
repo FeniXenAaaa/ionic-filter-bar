@@ -269,7 +269,7 @@
                 hideKeyboard();
                 scope.hideBackdrop();
 
-                filterWrapperEl[0].off('transitionend', onTransitionEnd);
+                filterWrapperEl.off('transitionend', onTransitionEnd);
               });
 
               filterWrapperEl.removeClass('filter-bar-in');     
