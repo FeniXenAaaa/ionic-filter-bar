@@ -73,7 +73,8 @@
           done: $ionicFilterBarConfig.done(),
           reorder: $ionicFilterBarConfig.reorder(),
           remove: $ionicFilterBarConfig.remove(),
-          add: $ionicFilterBarConfig.add()
+          add: $ionicFilterBarConfig.add(),
+          closeOnSubmit: $ionicFilterBarConfig.closeOnSubmit()
         };
 
         /**
@@ -112,6 +113,7 @@
             update: angular.noop,
             cancel: angular.noop,
             done: angular.noop,
+            submit: angular.noop,
             scrollDelegate: $ionicScrollDelegate,
             filter: $filter('filter'),
             filterProperties: null,
@@ -254,6 +256,20 @@
               $timeout(scope.cancelFilterBar);
             }, 300
           );
+
+          // calls submit callback and optionally removes the filter bar
+          scope.submitFilterBar = function () {
+            if (scope.config.closeOnSubmit) {
+              scope.removeFilterBar(function () {
+                scope.submit(scope.data.filterText);
+              });
+            }
+            else {
+              $timeout(function() {
+                scope.submit(scope.data.filterText);
+              });
+            }
+          };
 
           // Removes the filterBar from the body and cleans up vars/events.  Once the backdrop is hidden we can invoke done
           scope.removeFilterBar = function(done) {

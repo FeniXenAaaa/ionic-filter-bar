@@ -25,7 +25,8 @@
         backdrop: PLATFORM,
         transition: PLATFORM,
         platform: {},
-        placeholder: PLATFORM
+        placeholder: PLATFORM,
+        closeOnSubmit: PLATFORM
       };
 
       createConfig(configProperties, provider, '');
@@ -43,7 +44,8 @@
         search: 'ion-ios-search-strong',
         backdrop: true,
         transition: 'vertical',
-        placeholder: 'Search'
+        placeholder: 'Search',
+        closeOnSubmit: false
       });
 
       // iOS (it is the default already)
