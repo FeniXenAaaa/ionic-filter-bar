@@ -10,11 +10,6 @@ describe('Ionic FilterBar Service', function() {
 
   beforeEach(module('ionic', 'jett.ionic.filter.bar', function($provide) {
     ionic.requestAnimationFrame = function(cb) { cb(); };
-
-    // For the sake of this test, we don't want ionFilterBar to
-    // actually compile as a directive.
-    // We are only testing the service.
-    $provide.value('ionFilterBarDirective', []);
   }));
 
   function setup(options) {
@@ -128,7 +123,12 @@ describe('Ionic FilterBar Service', function() {
       done: doneSpy
     });
 
-    scope.showFilterBar();
+    var element = scope.element.children().eq(0);
+    element.triggerHandler('transitionend');
+
+    scope.showFilterBar();   
+
+    expect(element.length).toBe(1);
     expect(doneSpy).toHaveBeenCalled();
   }));
 

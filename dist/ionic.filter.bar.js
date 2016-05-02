@@ -116,7 +116,20 @@ angular.module('jett.ionic.filter.bar', ['ionic']);
             };
 
             //Event Listeners
-            cancelEl.addEventListener('click', cancelFilterBar);
+
+            // call stopImmediatePropagation on touchstart and mousedown in order to prevent
+            // search input loosing focus and closing the keybaord when canceling the filter bar. We need this since  
+            // the keyboard is going to be closed anyway after animating the filter bar out of view. Premature closing of the keybaord
+            // causes slow animation.
+            cancelEl.addEventListener('mousedown', function (event) {
+              event.stopImmediatePropagation();
+              cancelFilterBar();
+            });
+
+            cancelEl.addEventListener('touchstart', function (event) {            
+              event.stopImmediatePropagation();
+              cancelFilterBar();
+            });
             // Since we are wrapping with label, need to bind touchstart rather than click.
             // Even if we use div instead of label need to bind touchstart.  Click isn't allowing input to regain focus quickly
             clearEl.addEventListener('touchstart', clearClick);
@@ -576,9 +589,16 @@ angular.module('jett.ionic.filter.bar', ['ionic']);
 
             //animate the filterBar out, hide keyboard and backdrop
             ionic.requestAnimationFrame(function () {
-              filterWrapperEl.removeClass('filter-bar-in');
-              hideKeyboard();
-              scope.hideBackdrop();
+
+              // wait till the transition is over before hiding the keyboard - improves animation performance
+              filterWrapperEl.on('transitionend', function onTransitionEnd () {
+                hideKeyboard();
+                scope.hideBackdrop();
+
+                filterWrapperEl[0].off('transitionend', onTransitionEnd);
+              });
+
+              filterWrapperEl.removeClass('filter-bar-in');     
 
               //Wait before cleaning up so element isn't removed before filter bar animates out
               $timeout(function () {
@@ -623,10 +643,16 @@ angular.module('jett.ionic.filter.bar', ['ionic']);
               if (scope.removed) return;
 
               $timeout(function () {
-                filterWrapperEl.addClass('filter-bar-in');
-                scope.focusInput();
-                scope.showBackdrop();
-                (done || angular.noop)();
+                filterWrapperEl.addClass('filter-bar-in');                
+                
+                // wait till the transition is over before hiding the keyboard - improves animation performance
+                filterWrapperEl.on('transitionend', function onTransitionEnd() {
+                   filterWrapperEl.off('transitionend', onTransitionEnd);
+                   scope.focusInput();
+                   scope.showBackdrop();
+                   (done || angular.noop)();
+                });
+               
               }, 20, false);
             });
 
