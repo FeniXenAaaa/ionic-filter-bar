@@ -103,6 +103,10 @@
               $scope.focusInput();
             };
 
+            var inputSubmit = function () {
+              $scope.submitFilterBar();
+            };
+
             // When a non escape key is pressed, show/hide backdrop/clear button based on filterText length
             var keyUp = function(e) {
               if (e.which == 27) {
@@ -123,6 +127,7 @@
 
             inputEl.addEventListener('touchstart', inputClick);
             inputEl.addEventListener('mousedown', inputClick);
+            inputEl.addEventListener('search', inputSubmit);
 
             document.addEventListener('keyup', keyUp);
 
