@@ -137,6 +137,11 @@
             scope.config.theme = getNavBarTheme(scope.container.querySelector('.bar.bar-header'));
           }
 
+          // set search placeholder from opts
+          if (opts.placeholderText) {
+            scope.config.placeholder = opts.placeholderText;
+          }
+
           // Compile the template
           var element = scope.element = $compile('<ion-filter-bar class="filter-bar"></ion-filter-bar>')(scope);
 
